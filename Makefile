@@ -4,7 +4,7 @@ MYSQL_ROOT_PASSWORD = secret
 
 all: go-run
 
-mysql-run: mysql-remove
+mysql-run:
 	docker run --name $(CONTAINER_NAME) -p 3306:3306 -e MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASSWORD) -d $(MYSQL_IMAGE)
 
 mysql-remove:
@@ -16,10 +16,13 @@ mysql-start:
 mysql-stop:
 	docker stop $(CONTAINER_NAME)
 
-mysql-shell:
+mysql-shell-root:
+	docker exec -it $(CONTAINER_NAME) mysql -u root -p
+
+mysql-shell-user:
 	docker exec -it $(CONTAINER_NAME) mysql -u gopher -p recordings
 
 go-run:
 	go run .
 
-.PHONY: mysql-run mysql-remove mysql-start mysql-stop mysql-shell go-run
+.PHONY: mysql-run mysql-remove mysql-start mysql-stop mysql-shell go-run mysql-shell-root mysql-shell-user
